@@ -1,22 +1,26 @@
+import re
 from masks import get_mask_card_number, get_mask_account
 
 
-def mask_account_card(data_string: str) -> str:
+def mask_account_card(data_str: str) -> str:
     """
-    Маскирует номер карты или счета, сохраняя тип документа.
-    Принимает строку вида 'Visa Platinum 7000792289606361'
+    Универсальная функция: определяет тип (карта/счет) и отправляет в нужную маску только цифры
     """
-    # Разделяем строку на части по пробелам
-    parts = data_string.split()
 
-    # Номер всегда последний элемент, название — всё остальное
-    number = parts[-1]
-    type_name = " ".join(parts[:-1])
+    numbers_only = "".join(re.findall(r"\d+", data_str)) # извлекаем только цифры
 
-    # Проверяем, счет это или карта, и применяем нужную маску
-    if type_name.lower() == "счет":
-        masked_number = get_mask_account(number)
+    type_name = "".join(re.findall(r"\D+", data_str)).strip() # извлекаем только текст
+
+
+    if "счет" in type_name.lower():            # если будет ключевое слово "счет", то примениться маска для счета,
+        masked_number = get_mask_account(numbers_only)   # если не будет ключевого слова, то применится маска
+                                                                         # для номера карты
     else:
-        masked_number = get_mask_card_number(number)
+        masked_number = get_mask_card_number(numbers_only)
 
     return f"{type_name} {masked_number}"
+
+
+if __name__ == "__main__":
+    user_input = input("Введите данные: ")
+    print(mask_account_card(user_input))
