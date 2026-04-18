@@ -16,8 +16,6 @@ def filter_by_state(items: list[dict], state: str = "EXECUTED") -> list[dict]:
     return filtered
 
 
-
-
 def sort_by_date(items: list[dict], descending: bool = True) -> list[dict]:
     """
     Сортирует список словарей по ключу 'date'.
@@ -31,6 +29,7 @@ def sort_by_date(items: list[dict], descending: bool = True) -> list[dict]:
         key=lambda x: datetime.fromisoformat(x["date"]),
         reverse=descending
     )
+
 
 if __name__ == "__main__":
     test_data = [
