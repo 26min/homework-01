@@ -113,3 +113,10 @@ for card_number in card_number_generator(1, 5):
     print(card_number)
 # Результат: 0000 0000 0000 0001 и тд
 ```
+
+### Покрытие тестами
+Проект использует `pytest-cov` для анализа покрытия кода
+- Запуск тестов и генерация отчета:
+```bash
+pytest --cov=src --cov-report=html
+```
