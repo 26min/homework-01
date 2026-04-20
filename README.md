@@ -120,3 +120,22 @@ for card_number in card_number_generator(1, 5):
 ```bash
 pytest --cov=src --cov-report=html
 ```
+```
+======================= tests coverage ======================= 
+______ coverage: platform win32, python 3.14.3-final-0 _______ 
+
+Name                       Stmts   Miss  Cover
+----------------------------------------------
+src\__init__.py                0      0   100%
+src\generators.py             13      0   100%
+src\masks.py                  15      2    87%
+src\processing.py             15      5    67%
+src\widget.py                 19      2    89%
+tests\__init__.py              0      0   100%
+tests\test_generators.py      40      0   100%
+tests\test_masks.py           12      0   100%
+tests\test_processing.py      11      0   100%
+tests\test_widget.py           9      0   100%
+----------------------------------------------
+TOTAL                        134      9    93%
+```
