@@ -4,6 +4,22 @@ get_mask_card_number
 Функцию маскировки номера банковского счета
 get_mask_account
 """
+import logging
+
+# настройка пути: файл masks.log в папке logs в корне проекта
+log_dir = os.path.join(os.path.dirname(__file__), "..", "logs")
+os.makedirs(log_dir, exist_ok=True)
+log_path = os.path.join(log_dir, "masks.log")
+
+# настройка логера
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# настройка обработчика файла с перезаписью (mode='w')
+file_handler = logging.FileHandler(log_path, mode="w", encoding="utf-8")
+file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
 
 
 def get_mask_card_number(card_number: str) -> str:
