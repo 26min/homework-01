@@ -53,8 +53,7 @@ class TestFinancialApp(unittest.TestCase):
 
     @patch("requests.get")
     def test_convert_usd_via_api(self, mock_get):
-        """тест конвертации USD -> RUB через мок API"""
-        # Настраиваем фейковый ответ от API
+        # настраиваем фейковый ответ
         mock_get.return_value.status_code = 200
         mock_get.return_value.json.return_value = {"result": 7500.0}
 
@@ -64,11 +63,16 @@ class TestFinancialApp(unittest.TestCase):
                 "currency": {"code": "USD"}
             }
         }
+
         result = convert_to_rub(transaction)
 
-        self.assertEqual(result, 7500.0)
-        # Проверяем, что запрос действительно был отправлен
-        mock_get.assert_called_once()
+        # проверяем, что сумма верная
+        assert result == 7500.0
+
+        # проверяем, что параметры переданы правильно
+        args, kwargs = mock_get.call_args
+        assert kwargs['params']['to'] == 'RUB'
+        assert kwargs['params']['from'] == 'USD'
 
 
 if __name__ == "__main__":
