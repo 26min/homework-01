@@ -1,6 +1,8 @@
 import json
-import os
 import logging
+import os
+
+import pandas as pd
 
 # Настройка пути: файл utils.log в папке logs в корне проекта
 log_dir = os.path.join(os.path.dirname(__file__), "..", "logs")
@@ -17,7 +19,8 @@ file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(m
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
 
-def get_financial_transactions(path):
+
+def get_financial_transactions(path: str) -> list:
     """
     читает json и возвращает список словарей
     возвращает пустой список, если файл не найден, пуст или содержит не список.
@@ -30,7 +33,7 @@ def get_financial_transactions(path):
         return []
 
     try:
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
             if isinstance(data, list):
                 logger.info(f"Успешно прочитано транзакций: {len(data)}")
@@ -49,3 +52,52 @@ def get_financial_transactions(path):
         return []
 
 
+def get_transactions_from_csv(path: str) -> list:
+    """
+    читает транзакции из csv-файла с помощью pandas.
+    возвращает список словарей, если файл не найден или пуст - возвращает пустой список.
+    """
+    logger.info(f"Попытка открытия csv файла: {path}")
+    if not os.path.exists(path):
+        logger.error(f"csv файл не найден по пути: {path}")
+        return []
+
+    try:
+        # автоматически определяем разделитель (запятая или точка с запятой)
+        df = pd.read_csv(path, sep=None, engine='python')
+
+        # заменяем NaN на None
+        df = df.where(pd.notnull(df), None)
+
+        # конвертируем таблицу в привычный список словарей
+        transactions = df.to_dict(orient="records")
+        logger.info(f"Успешно прочитано {len(transactions)} транзакций из csv")
+        return transactions
+    except Exception as e:
+        logger.error(f"Ошибка при обработке csv файла {path}: {e}")
+        return []
+
+
+def get_transactions_from_excel(path: str) -> list:
+    """
+    читает транзакции из Excel-файла с помощью pandas.
+    возвращает список словарей, если файл не найден или пуст - возвращает пустой список.
+    """
+    logger.info(f"Попытка открытия Excel файла: {path}")
+    if not os.path.exists(path):
+        logger.error(f"Excel файл не найден по пути: {path}")
+        return []
+
+    try:
+        # открываем Excel файл через openpyxl
+        df = pd.read_excel(path, engine="openpyxl")
+
+        # заменяем пустые ячейки NaN на None
+        df = df.where(pd.notnull(df), None)
+
+        transactions = df.to_dict(orient="records")
+        logger.info(f"Успешно прочитано {len(transactions)} транзакций из Excel")
+        return transactions
+    except Exception as e:
+        logger.error(f"Ошибка при обработке Excel файла {path}: {e}")
+        return []

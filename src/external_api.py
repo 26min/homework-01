@@ -1,4 +1,5 @@
 import os
+
 import requests
 from dotenv import load_dotenv
 
@@ -8,7 +9,7 @@ load_dotenv()
 API_KEY = os.getenv("EXCHANGE_RATE_API_KEY")
 
 
-def convert_to_rub(transaction):
+def convert_to_rub(transaction: dict) -> float:
     """
     конвертирует сумму транзакции в рубли через Exchange Rates Data API.
     принимает словарь транзакции, возвращает сумму (float).
@@ -27,15 +28,9 @@ def convert_to_rub(transaction):
         url = "https://apilayer.com"
 
         # передаем параметры через словарь params (to, from, amount)
-        params = {
-            "to": "RUB",
-            "from": currency_code,
-            "amount": amount
-        }
+        params = {"to": "RUB", "from": currency_code, "amount": amount}
 
-        headers = {
-            "apikey": API_KEY
-        }
+        headers = {"apikey": API_KEY}
 
         try:
             response = requests.get(url, headers=headers, params=params, timeout=5)
@@ -44,7 +39,7 @@ def convert_to_rub(transaction):
             data = response.json()
             return float(data.get("result", 0.0))
 
-        except (requests.RequestException, ValueError, KeyError):
+        except requests.RequestException, ValueError, KeyError:
             # в случае ошибки API возвращаем 0.0
             return 0.0
 

@@ -1,32 +1,36 @@
 import unittest
 from unittest.mock import mock_open, patch
+
+import pandas as pd
+import requests
+
 from src.external_api import convert_to_rub
-from src.utils import get_financial_transactions
+from src.utils import get_financial_transactions, get_transactions_from_csv, get_transactions_from_excel
 
 
 class TestFinancialApp(unittest.TestCase):
 
-    # тесты для utils
+    # тесты для модуля utils (JSON)
 
     @patch("os.path.exists")
     @patch("builtins.open", new_callable=mock_open, read_data='[{"id": 1}]')
     def test_get_transactions_success(self, mock_file, mock_exists):
-        """тест успешного получения данных из json"""
+        """тест успешного получения данных из json."""
         mock_exists.return_value = True
         result = get_financial_transactions("data/operations.json")
         self.assertEqual(result, [{"id": 1}])
 
     @patch("os.path.exists")
     def test_get_transactions_file_not_found(self, mock_exists):
-        """тест ситуации, когда файл не найден"""
+        """тест, когда файл не найден."""
         mock_exists.return_value = False
         result = get_financial_transactions("non_existent.json")
         self.assertEqual(result, [])
 
     @patch("os.path.exists")
-    @patch("builtins.open", new_callable=mock_open, read_data='')
+    @patch("builtins.open", new_callable=mock_open, read_data="")
     def test_get_transactions_empty_file(self, mock_file, mock_exists):
-        """тест пустого файла -> должен вернуть пустой список"""
+        """тест пустого файла -> вернуть пустой список."""
         mock_exists.return_value = True
         result = get_financial_transactions("empty.json")
         self.assertEqual(result, [])
@@ -34,15 +38,53 @@ class TestFinancialApp(unittest.TestCase):
     @patch("os.path.exists")
     @patch("builtins.open", new_callable=mock_open, read_data='{"not_a_list": 1}')
     def test_get_transactions_not_a_list(self, mock_file, mock_exists):
-        """тест файла, где вместо списка идет словарь"""
+        """тест файла, где вместо списка идет словарь."""
         mock_exists.return_value = True
         result = get_financial_transactions("wrong_format.json")
         self.assertEqual(result, [])
 
-    # тесты для модуля external_api
+    # новые тесты для модуля utils - CSV и Excel через Pandas
+
+    @patch("os.path.exists")
+    @patch("pandas.read_csv")
+    def test_get_transactions_from_csv_success(self, mock_read_csv, mock_exists):
+        """тест успешного чтения CSV через подмену DataFrame."""
+        mock_exists.return_value = True
+        fake_df = pd.DataFrame([{"id": 123, "amount": 500}])
+        mock_read_csv.return_value = fake_df
+
+        result = get_transactions_from_csv("dummy.csv")
+        self.assertEqual(result, [{"id": 123, "amount": 500}])
+
+    @patch("os.path.exists")
+    def test_get_transactions_from_csv_file_not_found(self, mock_exists):
+        """тест ситуации, когда CSV файл отсутствует на диске."""
+        mock_exists.return_value = False
+        result = get_transactions_from_csv("missing.csv")
+        self.assertEqual(result, [])
+
+    @patch("os.path.exists")
+    @patch("pandas.read_excel")
+    def test_get_transactions_from_excel_success(self, mock_read_excel, mock_exists):
+        """тест успешного чтения Excel через подмену DataFrame."""
+        mock_exists.return_value = True
+        fake_df = pd.DataFrame([{"id": 456, "amount": 1000}])
+        mock_read_excel.return_value = fake_df
+
+        result = get_transactions_from_excel("dummy.xlsx")
+        self.assertEqual(result, [{"id": 456, "amount": 1000}])
+
+    @patch("os.path.exists")
+    def test_get_transactions_from_excel_file_not_found(self, mock_exists):
+        """тест ситуации, когда Excel файл отсутствует на диске."""
+        mock_exists.return_value = False
+        result = get_transactions_from_excel("missing.xlsx")
+        self.assertEqual(result, [])
+
+    # тесты для external_api
 
     def test_convert_rub_directly(self):
-        """тест: RUB не должен конвертироваться через API"""
+        """тест: RUB не должен конвертироваться через API."""
         transaction = {
             "operationAmount": {
                 "amount": "100.50",
@@ -53,7 +95,7 @@ class TestFinancialApp(unittest.TestCase):
 
     @patch("requests.get")
     def test_convert_usd_via_api(self, mock_get):
-        # настраиваем фейковый ответ
+        """тест конвертации USD через mock к API."""
         mock_get.return_value.status_code = 200
         mock_get.return_value.json.return_value = {"result": 7500.0}
 
@@ -66,13 +108,28 @@ class TestFinancialApp(unittest.TestCase):
 
         result = convert_to_rub(transaction)
 
-        # проверяем, что сумма верная
-        assert result == 7500.0
+        # проверяем корректность возвращаемой суммы
+        self.assertEqual(result, 7500.0)
 
-        # проверяем, что параметры переданы правильно
+        # проверяем, что параметры запроса сформированы верно
         args, kwargs = mock_get.call_args
-        assert kwargs['params']['to'] == 'RUB'
-        assert kwargs['params']['from'] == 'USD'
+        self.assertEqual(kwargs["params"]["to"], "RUB")
+        self.assertEqual(kwargs["params"]["from"], "USD")
+
+    @patch("requests.get")
+    def test_convert_api_error_returns_zero(self, mock_get):
+        """тест: при сбое сети API должен возвращаться 0.0."""
+        mock_get.side_effect = requests.exceptions.RequestException
+
+        transaction = {
+            "operationAmount": {
+                "amount": "100",
+                "currency": {"code": "USD"}
+            }
+        }
+
+        result = convert_to_rub(transaction)
+        self.assertEqual(result, 0.0)
 
 
 if __name__ == "__main__":

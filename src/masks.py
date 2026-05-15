@@ -4,7 +4,9 @@ get_mask_card_number
 Функцию маскировки номера банковского счета
 get_mask_account
 """
+
 import logging
+import os
 
 # настройка пути: файл masks.log в папке logs в корне проекта
 log_dir = os.path.join(os.path.dirname(__file__), "..", "logs")
@@ -38,9 +40,9 @@ def get_mask_card_number(card_number: str) -> str:
     return new_format_to_return
 
 
-#input_from_user = input("Введите свой номер карты: ")
-#returned_value = get_mask_card_number(input_from_user)
-#print(returned_value)
+# input_from_user = input("Введите свой номер карты: ")
+# returned_value = get_mask_card_number(input_from_user)
+# print(returned_value)
 
 
 def get_mask_account(account_number: str) -> str:
@@ -50,14 +52,12 @@ def get_mask_account(account_number: str) -> str:
         return "Вы ввели неверный номер счета, он должен содержать 20 цифр."  # проверяем длину
 
     if not new_account_number.isdigit():
-        return (
-            "Вы ввели неверные данные, номер содержит только цифры."  # проверяем на наличие букв/других символов
-        )
+        return "Вы ввели неверные данные, номер содержит только цифры."  # проверяем на наличие букв/других символов
 
         # Если проверки пройдены, код дойдет до этой строки:
     return f"**{new_account_number[-4:]}"
 
 
-#input_from_user_account = input("Введите свой номер счета:")
-#returned_value = get_mask_account(input_from_user_account)
-#print(returned_value)
+# input_from_user_account = input("Введите свой номер счета:")
+# returned_value = get_mask_account(input_from_user_account)
+# print(returned_value)
