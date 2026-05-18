@@ -11,7 +11,7 @@ API_KEY = os.getenv("EXCHANGE_RATE_API_KEY")
 
 def convert_to_rub(transaction: dict) -> float:
     """
-    конвертирует сумму транзакции в рубли через Exchange Rates Data API.
+    Конвертирует сумму транзакции в рубли через Exchange Rates Data API.
     принимает словарь транзакции, возвращает сумму (float).
     """
     # извлекаем данные из вложенной структуры json
@@ -39,7 +39,7 @@ def convert_to_rub(transaction: dict) -> float:
             data = response.json()
             return float(data.get("result", 0.0))
 
-        except requests.RequestException, ValueError, KeyError:
+        except (requests.RequestException, ValueError, KeyError):
             # в случае ошибки API возвращаем 0.0
             return 0.0
 
