@@ -1,3 +1,4 @@
+"""Модуль для чтения финансовых транзакций из файлов JSON, CSV и Excel."""
 import json
 import logging
 import os
@@ -21,11 +22,10 @@ logger.addHandler(file_handler)
 
 
 def get_financial_transactions(path: str) -> list:
-    """
-    читает json и возвращает список словарей
-    возвращает пустой список, если файл не найден, пуст или содержит не список.
-    """
+    """Читает json и возвращает список словарей.
 
+    Возвращает пустой список, если файл не найден, пуст или содержит не список.
+    """
     logger.info(f"Попытка открытия файла: {path}")
 
     if not os.path.exists(path):
@@ -53,9 +53,9 @@ def get_financial_transactions(path: str) -> list:
 
 
 def get_transactions_from_csv(path: str) -> list:
-    """
-    читает транзакции из csv-файла с помощью pandas.
-    возвращает список словарей, если файл не найден или пуст - возвращает пустой список.
+    """Читает транзакции из csv-файла с помощью pandas.
+
+    Возвращает список словарей, если файл не найден или пуст - возвращает пустой список.
     """
     logger.info(f"Попытка открытия csv файла: {path}")
     if not os.path.exists(path):
@@ -79,9 +79,9 @@ def get_transactions_from_csv(path: str) -> list:
 
 
 def get_transactions_from_excel(path: str) -> list:
-    """
-    читает транзакции из Excel-файла с помощью pandas.
-    возвращает список словарей, если файл не найден или пуст - возвращает пустой список.
+    """Читает транзакции из Excel-файла с помощью pandas.
+
+    Возвращает список словарей, если файл не найден или пуст - возвращает пустой список.
     """
     logger.info(f"Попытка открытия Excel файла: {path}")
     if not os.path.exists(path):

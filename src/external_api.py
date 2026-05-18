@@ -1,3 +1,4 @@
+"""Модуль с конвертацией валюты."""
 import os
 
 import requests
@@ -10,9 +11,9 @@ API_KEY = os.getenv("EXCHANGE_RATE_API_KEY")
 
 
 def convert_to_rub(transaction: dict) -> float:
-    """
-    Конвертирует сумму транзакции в рубли через Exchange Rates Data API.
-    принимает словарь транзакции, возвращает сумму (float).
+    """Конвертирует сумму транзакции в рубли через Exchange Rates Data API.
+
+    Принимает словарь транзакции, возвращает сумму (float).
     """
     # извлекаем данные из вложенной структуры json
     operation_amount = transaction.get("operationAmount", {})

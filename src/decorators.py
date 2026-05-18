@@ -1,3 +1,4 @@
+"""Модуль, содержащий декораторы для логирования работы функций."""
 import functools
 from typing import Any, Callable, Optional
 

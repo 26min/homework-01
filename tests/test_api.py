@@ -1,4 +1,4 @@
-import os
+"""Модуль автоматического тестирования финансовых утилит и внешних API."""
 import unittest
 from unittest.mock import mock_open, patch
 
@@ -10,7 +10,7 @@ from src.utils import get_financial_transactions, get_transactions_from_csv, get
 
 
 class TestFinancialApp(unittest.TestCase):
-    """Набор тестов для проверки утилит и интеграции с внешним API"""
+    """Набор тестов для проверки утилит и интеграции с внешним API."""
 
     # тесты для модуля utils (JSON)
 
@@ -60,7 +60,7 @@ class TestFinancialApp(unittest.TestCase):
 
     @patch("os.path.exists")
     def test_get_transactions_from_csv_file_not_found(self, mock_exists):
-        """тест ситуации, когда CSV файл отсутствует на диске."""
+        """Тест ситуации, когда CSV файл отсутствует на диске."""
         mock_exists.return_value = False
         result = get_transactions_from_csv("missing.csv")
         self.assertEqual(result, [])
