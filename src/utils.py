@@ -2,6 +2,8 @@
 import json
 import logging
 import os
+import re
+from collections import Counter
 
 import pandas as pd
 
@@ -101,3 +103,43 @@ def get_transactions_from_excel(path: str) -> list:
     except Exception as e:
         logger.error(f"Ошибка при обработке Excel файла {path}: {e}")
         return []
+
+
+def process_bank_search(data: list[dict], search: str) -> list[dict]:
+    """Ищет банковские операции по ключевому слову в описании."""
+    if not search:
+        return []
+
+    pattern = re.compile(re.escape(search), re.IGNORECASE)
+    matching_transactions = []
+
+    for transaction in data:
+        description = transaction.get("description", "")
+        if pattern.search(description):
+            matching_transactions.append(transaction)
+
+    return matching_transactions
+
+
+def process_bank_operations(data: list[dict], categories: list) -> dict:
+    """Подсчитывает количество операций для заданных категорий.
+
+    Категории ищутся в поле 'description'. Категории, отсутствующие
+    в списке или в данных, будут нулевым значением.
+    """
+    result = {category: 0 for category in categories}
+    if not data:
+        return result
+
+    descriptions = [
+        transaction.get("description")
+        for transaction in data
+        if transaction.get("description")
+    ]
+
+    counts = Counter(descriptions)
+
+    for category in categories:
+        result[category] = counts.get(category, 0)
+
+    return result
