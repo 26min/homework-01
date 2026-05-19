@@ -71,8 +71,10 @@ def main() -> None:
         order_choice = input("\nПользователь: ").strip().lower()
 
         reverse_order = True if "убывание" in order_choice else False
+
         # Сортируем по строке даты
-        transactions.sort(key=lambda t: t.get("date", ""), reverse=reverse_order)
+        transactions.sort(key=lambda t: str(t.get("date", "")) if t.get('date') and not isinstance(t.get("date"), float) else "", reverse=reverse_order)
+
 
     # Шаг 3: Фильтрация по валюте (только RUB)
     print("\nПрограмма: Выводить только рублевые транзакции? Да/Нет")
@@ -80,7 +82,16 @@ def main() -> None:
 
     if rub_choice == "да":
         # Используем filter_by_currency
-        transactions = list(filter_by_currency(transactions, "RUB"))
+        filtered_by_rub = []
+        for t in transactions:
+            # Проверяем структуру JSON
+            currency_json = t.get("operationAmount", {}).get("currency", {}).get("code")
+            # Проверяем структуру CSV/XLSX
+            currency_csv = t.get("currency_code")
+
+            if currency_json == "RUB" or currency_csv == "RUB":
+                filtered_by_rub.append(t)
+        transactions = filtered_by_rub
 
     # Шаг 4: Фильтрация по ключевому слову в описании
     print("\nПрограмма: Отфильтровать список транзакций по определенному слову в описании? Да/Нет")
@@ -111,21 +122,30 @@ def main() -> None:
         description = t.get("description", "Описание отсутствует")
 
         # Маскируем отправителя и получателя
-        from_info = format_account_or_card(t.get("from", ""))
-        to_info = format_account_or_card(t.get("to", ""))
+        from_str = str(t.get("from", "")) if t.get("from") and not isinstance(t.get("from"), float) else ""
+        to_str = str(t.get("to", "")) if t.get("to") and not isinstance(t.get("to"), float) else ""
+
+        from_info = format_account_or_card(from_str)
+        to_info = format_account_or_card(to_str)
 
         route = f"{from_info} -> {to_info}" if from_info else to_info
 
         # Извлекаем сумму и валюту из структуры operationAmount
-        amount_data = t.get("operationAmount", {})
-        amount = amount_data.get("amount", 0)
-        currency_name = amount_data.get("currency", {}).get("name", "руб.")
+        if "amount" in t and not isinstance(t.get("amount"), dict):
+            amount = t.get("amount", 0)
+        else:
+            amount = t.get("operationAmount", {}).get("amount", 0)
 
-        # Вывод операции по шаблону
+            # Безопасное извлечение названия валюты (ИСПРАВЛЕНО: Правильные отступы внутри цикла)
+        if "currency_name" in t:
+            currency_name = t.get("currency_name", "руб.")
+        else:
+            currency_name = t.get("operationAmount", {}).get("currency", {}).get("name", "руб.")
+
+            # Вывод операции по шаблону (ИСПРАВЛЕНО: Правильные отступы внутри цикла)
         print(f"{formatted_date} {description}")
         print(route)
         print(f"Сумма: {amount} {currency_name}\n")
-
 
 if __name__ == "__main__":
     main()
