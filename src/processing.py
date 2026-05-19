@@ -31,18 +31,18 @@ def sort_by_date(items: list[dict], descending: bool = True) -> list[dict]:
     )
 
 
-if __name__ == "__main__":
-    test_data = [
-        {'id': 414288290, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'},
-        {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'},
-        {'id': 594226727, 'state': 'CANCELED', 'date': '2018-09-12T21:27:25.241689'},
-        {'id': 615064591, 'state': 'CANCELED', 'date': '2018-10-14T08:21:33.419441'}
-    ]
-
-    # Проверка фильтрации
-    executed_data = filter_by_state(test_data)
-    print("Отфильтрованные (EXECUTED):", executed_data)
-
-    # Проверка сортировки (по умолчанию — самые свежие сверху)
-    sorted_data = sort_by_date(test_data)
-    print("\nОтсортированные по дате (убывание):", sorted_data)
+# if __name__ == "__main__":
+#     test_data = [
+#         {'id': 414288290, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'},
+#         {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'},
+#         {'id': 594226727, 'state': 'CANCELED', 'date': '2018-09-12T21:27:25.241689'},
+#         {'id': 615064591, 'state': 'CANCELED', 'date': '2018-10-14T08:21:33.419441'}
+#     ]
+#
+#     # Проверка фильтрации
+#     executed_data = filter_by_state(test_data)
+#     print("Отфильтрованные (EXECUTED):", executed_data)
+#
+#     # Проверка сортировки (по умолчанию — самые свежие сверху)
+#     sorted_data = sort_by_date(test_data)
+#     print("\nОтсортированные по дате (убывание):", sorted_data)

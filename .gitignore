@@ -213,3 +213,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+htmlcov/
+.pytest_cache/
+
+.idea/
+

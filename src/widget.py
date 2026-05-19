@@ -20,9 +20,9 @@ def mask_account_card(data_str: str) -> str:
     return f"{type_name} {masked_number}"
 
 
-if __name__ == "__main__":
-    user_input = input("Введите данные: ")
-    print(mask_account_card(user_input))
+# if __name__ == "__main__":
+#     user_input = input("Введите данные: ")
+#     print(mask_account_card(user_input))
 
 
 def get_date(date_string: str) -> str:
