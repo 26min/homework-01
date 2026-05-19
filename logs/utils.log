@@ -1,0 +1,2 @@
+2026-05-19 13:36:16,418 - src.utils - INFO - Попытка открытия csv файла: data/operations.csv
+2026-05-19 13:36:16,419 - src.utils - ERROR - csv файл не найден по пути: data/operations.csv
