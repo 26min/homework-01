@@ -1,0 +1,2 @@
+2026-05-20 22:41:05,181 - src.utils - INFO - Попытка открытия Excel файла: data/operations.xlsx
+2026-05-20 22:41:05,477 - src.utils - INFO - Успешно прочитано 101 транзакций из Excel
