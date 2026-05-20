@@ -1,12 +1,8 @@
 """Главный модуль приложения для анализа и фильтрации банковских транзакций."""
-from src.generators import filter_by_currency
+from src.categories import process_bank_search
+# from src.generators import filter_by_currency
 from src.masks import get_mask_account, get_mask_card_number
-from src.utils import (
-    get_financial_transactions,
-    get_transactions_from_csv,
-    get_transactions_from_excel,
-    process_bank_search
-)
+from src.utils import get_financial_transactions, get_transactions_from_csv, get_transactions_from_excel
 
 
 def format_account_or_card(data_str: str) -> str:
@@ -41,13 +37,17 @@ def main() -> None:
         transactions = get_financial_transactions("data/operations.json")
     elif user_choice == "2":
         print("\nПрограмма: Для обработки выбран CSV-файл.")
-        transactions = get_transactions_from_csv("data/operations.csv")
+        transactions = get_transactions_from_csv("data/transactions.csv")
     elif user_choice == "3":
         print("\nПрограмма: Для обработки выбран XLSX-файл.")
         transactions = get_transactions_from_excel("data/operations.xlsx")
     else:
         print("\nПрограмма: Некорректный пункт меню. Перезапустите программу.")
         return
+
+    print(f"\n[ОТЛАДКА] Всего загружено транзакций из файла: {len(transactions)}")
+    if transactions:
+        print(f"[ОТЛАДКА] Пример первой транзакции: {transactions[0]}")
 
     # Шаг 1: Фильтрация по статусу
     valid_statuses = {"EXECUTED", "CANCELED", "PENDING"}
@@ -73,23 +73,23 @@ def main() -> None:
         reverse_order = True if "убывание" in order_choice else False
 
         # Сортируем по строке даты
-        transactions.sort(key=lambda t: str(t.get("date", "")) if t.get('date') and not isinstance(t.get("date"), float) else "", reverse=reverse_order)
-
+        transactions.sort(
+            key=lambda t: str(t.get("date", "")) if t.get('date') and not isinstance(t.get("date"), float) else "",
+            reverse=reverse_order)
 
     # Шаг 3: Фильтрация по валюте (только RUB)
     print("\nПрограмма: Выводить только рублевые транзакции? Да/Нет")
     rub_choice = input("\nПользователь: ").strip().lower()
 
     if rub_choice == "да":
-        # Используем filter_by_currency
         filtered_by_rub = []
         for t in transactions:
-            # Проверяем структуру JSON
             currency_json = t.get("operationAmount", {}).get("currency", {}).get("code")
-            # Проверяем структуру CSV/XLSX
             currency_csv = t.get("currency_code")
+            # Проверка структуры Excel
+            currency_xlsx = t.get("operationAmount.currency.code")
 
-            if currency_json == "RUB" or currency_csv == "RUB":
+            if currency_json == "RUB" or currency_csv == "RUB" or currency_xlsx == "RUB":
                 filtered_by_rub.append(t)
         transactions = filtered_by_rub
 
@@ -136,16 +136,32 @@ def main() -> None:
         else:
             amount = t.get("operationAmount", {}).get("amount", 0)
 
-            # Безопасное извлечение названия валюты (ИСПРАВЛЕНО: Правильные отступы внутри цикла)
+            # Извлечение названия валюты
         if "currency_name" in t:
             currency_name = t.get("currency_name", "руб.")
         else:
             currency_name = t.get("operationAmount", {}).get("currency", {}).get("name", "руб.")
 
-            # Вывод операции по шаблону (ИСПРАВЛЕНО: Правильные отступы внутри цикла)
+        # Сумма
+        if "amount" in t and not isinstance(t.get("amount"), dict):
+            amount = t.get("amount", 0)
+        elif "operationAmount.amount" in t:
+            amount = t.get("operationAmount.amount", 0)
+        else:
+            amount = t.get("operationAmount", {}).get("amount", 0)
+
+        # Валюта
+        if "currency_name" in t:
+            currency_name = t.get("currency_name", "руб.")
+        elif "operationAmount.currency.name" in t:
+            currency_name = t.get("operationAmount.currency.name", "руб.")
+        else:
+            currency_name = t.get("operationAmount", {}).get("currency", {}).get("name", "руб.")
+
         print(f"{formatted_date} {description}")
         print(route)
         print(f"Сумма: {amount} {currency_name}\n")
+
 
 if __name__ == "__main__":
     main()

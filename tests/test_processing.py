@@ -1,4 +1,5 @@
 import pytest
+
 from src.processing import filter_by_state, sort_by_date
 
 
@@ -50,4 +51,3 @@ def test_sort_by_date_ascending(sample_data):
     assert result[0]['id'] == 2  # Июнь 2018 года
     assert result[1]['id'] == 3  # Сентябрь 2018 года
     assert result[2]['id'] == 1  # 2019 год
-

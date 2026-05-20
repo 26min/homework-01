@@ -136,9 +136,11 @@
 #
 # if __name__ == "__main__":
 #     unittest.main()
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
+# import pytest
 import requests
-import pytest
+
 from src.external_api import convert_to_rub
 
 
