@@ -1,6 +1,6 @@
 """Модуль тестирования функций поиска и подсчета категорий транзакций."""
 
-from src.utils import process_bank_operations, process_bank_search
+from src.categories import process_bank_search, process_bank_operations
 
 
 def test_process_bank_search_success() -> None:

@@ -1,16 +1,16 @@
-2026-05-19 23:04:22,706 - src.utils - INFO - Попытка открытия файла: empty.json
-2026-05-19 23:04:22,708 - src.utils - ERROR - Ошибка декодирования JSON в файле: empty.json
-2026-05-19 23:04:22,710 - src.utils - INFO - Попытка открытия файла: non_existent.json
-2026-05-19 23:04:22,710 - src.utils - ERROR - Файл не найден: non_existent.json
-2026-05-19 23:04:22,712 - src.utils - INFO - Попытка открытия csv файла: missing.csv
-2026-05-19 23:04:22,712 - src.utils - ERROR - csv файл не найден по пути: missing.csv
-2026-05-19 23:04:22,715 - src.utils - INFO - Попытка открытия csv файла: dummy.csv
-2026-05-19 23:04:22,722 - src.utils - INFO - Успешно прочитано 1 транзакций из csv
-2026-05-19 23:04:22,724 - src.utils - INFO - Попытка открытия Excel файла: missing.xlsx
-2026-05-19 23:04:22,724 - src.utils - ERROR - Excel файл не найден по пути: missing.xlsx
-2026-05-19 23:04:22,726 - src.utils - INFO - Попытка открытия Excel файла: dummy.xlsx
-2026-05-19 23:04:22,726 - src.utils - INFO - Успешно прочитано 1 транзакций из Excel
-2026-05-19 23:04:22,729 - src.utils - INFO - Попытка открытия файла: wrong_format.json
-2026-05-19 23:04:22,729 - src.utils - WARNING - Данные в файле wrong_format.json не являются списком
-2026-05-19 23:04:22,731 - src.utils - INFO - Попытка открытия файла: data/operations.json
-2026-05-19 23:04:22,731 - src.utils - INFO - Успешно прочитано транзакций: 1
+2026-05-20 08:44:33,737 - src.utils - INFO - Попытка открытия файла: empty.json
+2026-05-20 08:44:33,768 - src.utils - ERROR - Ошибка декодирования JSON в файле: empty.json
+2026-05-20 08:44:33,770 - src.utils - INFO - Попытка открытия файла: non_existent.json
+2026-05-20 08:44:33,770 - src.utils - ERROR - Файл не найден: non_existent.json
+2026-05-20 08:44:33,772 - src.utils - INFO - Попытка открытия csv файла: missing.csv
+2026-05-20 08:44:33,772 - src.utils - ERROR - csv файл не найден по пути: missing.csv
+2026-05-20 08:44:33,775 - src.utils - INFO - Попытка открытия csv файла: dummy.csv
+2026-05-20 08:44:33,781 - src.utils - INFO - Успешно прочитано 1 транзакций из csv
+2026-05-20 08:44:33,783 - src.utils - INFO - Попытка открытия Excel файла: missing.xlsx
+2026-05-20 08:44:33,783 - src.utils - ERROR - Excel файл не найден по пути: missing.xlsx
+2026-05-20 08:44:33,785 - src.utils - INFO - Попытка открытия Excel файла: dummy.xlsx
+2026-05-20 08:44:33,786 - src.utils - INFO - Успешно прочитано 1 транзакций из Excel
+2026-05-20 08:44:33,790 - src.utils - INFO - Попытка открытия файла: wrong_format.json
+2026-05-20 08:44:33,790 - src.utils - WARNING - Данные в файле wrong_format.json не являются списком
+2026-05-20 08:44:33,793 - src.utils - INFO - Попытка открытия файла: data/operations.json
+2026-05-20 08:44:33,793 - src.utils - INFO - Успешно прочитано транзакций: 1
